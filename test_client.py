@@ -1,4 +1,4 @@
-from rpc import RPCServer
+from server import RPCServer
 import protocol
 
 s = RPCServer('tcp://127.0.0.1:5000')
@@ -15,8 +15,10 @@ print(object.__repr__(A.a))
 a = A()
 print(a)
 print(a.a)
+print(a.a[-1])
 
 tutu = s.get('tutu')
-print(tutu(lambda x: x * 2))
+l = tutu(lambda x: x * 2)
+print(l)
 
 s.stop()
