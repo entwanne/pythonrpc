@@ -4,6 +4,11 @@ import zmq
 
 import protocol
 
+def call_parent_method(self, method, args):
+    server, obj = rpc_owner(self), rpc_id(self)
+    args = [serialize(server, e) for e in args]
+    return server.request(protocol.Command.CALL_PARENT_METHOD, (obj, method, args))
+
 class RPCWrapper:
     def __init__(self, rpc_owner, rpc_id):
         object.__setattr__(self, 'owner', rpc_owner) # RPCServer
@@ -28,8 +33,12 @@ class RPCWrapper:
         return server.request(protocol.Command.CALL_OBJ, (obj, args, kwargs))
 
     def __str__(self):
-        server, obj = rpc_owner(self), rpc_id(self)
-        return server.request(protocol.Command.STR_OBJ, (obj,))
+        return call_parent_method(self, '__str__', ())
+    def __mul__(self, rhs):
+        return call_parent_method(self, '__mul__', (rhs,))
+    def __rmul__(self, rhs):
+        return call_parent_method(self, '__rmul__', (rhs,))
+
 
 def rpc_owner(rpc):
     return object.__getattribute__(rpc, 'owner')
@@ -90,9 +99,12 @@ class RPCWorker(threading.Thread):
             fargs = [unserialize(self.server, e) for e in fargs]
             fkwargs = {unserialize(self.server, k): unserialize(self.server, v) for (k, v) in fkwargs}
             r = self.getobj(obj_id)(*fargs, **fkwargs)
-        elif cmd == protocol.Command.STR_OBJ:
-            obj_id, = args
-            r = str(self.getobj(obj_id))
+        elif cmd == protocol.Command.CALL_PARENT_METHOD:
+            obj_id, name, fargs = args
+            fargs = [unserialize(self.server, e) for e in fargs]
+            obj = self.getobj(obj_id)
+            method = getattr(type(obj), name)
+            r = method(obj, *fargs)
         self.server.answer(self.msg_id, serialize(self.server, r))
 
 class RPCServer:

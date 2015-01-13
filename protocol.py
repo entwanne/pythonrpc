@@ -9,7 +9,7 @@ class Command:
     OBJ_GET_ATTR = 1
     OBJ_SET_ATTR = 2
     CALL_OBJ = 3
-    STR_OBJ = 4 # REMOVE
+    CALL_PARENT_METHOD = 5
 
 def pack(*args):
     return msgpack.packb(args, use_bin_type=True)

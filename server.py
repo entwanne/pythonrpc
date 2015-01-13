@@ -7,7 +7,7 @@ class A:
 s.register('A', A)
 
 def tutu(f):
-    return f(4)
+    return f([1])
 s.register('tutu', tutu)
 
 s.start()
