@@ -1,10 +1,12 @@
 import wrapper
 from utils import rpc_id
+from exceptions import Exceptions
 
 class RPCType:
     PRIMITIVE = 0
     REMOTE_OBJ = 1
     LOCAL_OBJ = 2
+    EXCEPTION = 3
         
 def serialize(server, obj):
     if type(obj) in {type(None), bool, int, float, str}:
@@ -26,3 +28,6 @@ def unserialize(server, tobj):
         return server.objects.get(obj)
     elif t == RPCType.REMOTE_OBJ:
         return wrapper.RPCWrapper(server, obj)
+    elif t == RPCType.EXCEPTION:
+        n, args = obj
+        Exceptions.throw(n, args)

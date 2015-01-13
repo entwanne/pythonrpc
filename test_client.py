@@ -20,5 +20,9 @@ print(a.a[-1])
 tutu = s.get('tutu')
 l = tutu(lambda x: x * 2)
 print(l)
+try:
+    print(l + [1])
+except TypeError:
+    pass
 
 s.stop()

@@ -11,7 +11,7 @@ def call_parent_method(self, method, args):
 # https://docs.python.org/3/reference/datamodel.html#special-method-names
 # Except descriptors and instancecheck/subclasscheck
 
-class RPCWrapper:
+class RPCWrapper(object):
     def __init__(self, rpc_owner, rpc_id):
         object.__setattr__(self, 'owner', rpc_owner) # RPCServer
         object.__setattr__(self, 'id', rpc_id)

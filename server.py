@@ -8,7 +8,7 @@ import serialize
 from worker import RPCWorker
 
 
-class RPCServer:
+class RPCServer(object):
     def __init__(self, socket_uri, bind=False):
         self.ctx = zmq.Context()
         self.socket = self.ctx.socket(zmq.PAIR)
@@ -36,7 +36,7 @@ class RPCServer:
         if not msg_id in self.resps:
             event = threading.Event()
             self.events[msg_id] = event
-            if not msg_id in self.resps:
+            if not msg_id in self.resps: # If msg occurred between first test and instanciation of the event
                 event.wait()
             del self.events[msg_id]
         msg = self.resps[msg_id]
@@ -57,7 +57,7 @@ class RPCServer:
 
 class RPCServerListener(threading.Thread):
     def __init__(self, server):
-        super().__init__()
+        super(RPCServerListener, self).__init__()
         self.server = server
         self.running = True
 
