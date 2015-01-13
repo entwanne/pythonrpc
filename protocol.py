@@ -6,8 +6,6 @@ class MsgType:
 
 class Command:
     GET_OBJ = 0
-    OBJ_GET_ATTR = 1
-    OBJ_SET_ATTR = 2
     CALL_OBJ = 3
     CALL_PARENT_METHOD = 5
 
