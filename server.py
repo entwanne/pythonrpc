@@ -63,7 +63,7 @@ class RPCServerListener(threading.Thread):
 
     def run(self):
         while self.running:
-            if self.server.socket.poll(0.1) == zmq.POLLIN:
+            if self.server.socket.poll(100) == zmq.POLLIN:
                 msg_id, msg_type, msg = protocol.unpack(self.server.socket.recv())
                 if msg_type == protocol.MsgType.REQUEST:
                     #print('Got request', msg)

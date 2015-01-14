@@ -13,7 +13,6 @@ s.register('tutu', tutu)
 s.start()
 
 try:
-    while True:
-        pass
+    s.listener.join()
 except KeyboardInterrupt:
     s.stop()

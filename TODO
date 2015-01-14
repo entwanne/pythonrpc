@@ -1,3 +1,3 @@
-RPCServerListener: écoute sur les deux sockets pour obtenir les requêtes et réponses. Lors d'une requête, instancie un RPCWorker (ou pool de workers) (limiter le nombre max de workers = param du RPCServer, None si pas de limite) (possiblement coupler les deux: avoir une pool de N workers et pouvoir monter jusqu'à M, en fermant les workers après leur tâche si plus de N workers sont en cours d'utilisation). Lors d'une réponse, la stocke dans un dictionnaire et notifie le threading.Event associé
-
-Relayer les exceptions correctement
+pool de workers
+limiter le nombre max de workers = param du RPCServer, None si pas de limite
+possiblement coupler les deux: avoir une pool de N workers et pouvoir monter jusqu'à M, en fermant les workers après leur tâche si plus de N workers sont en cours d'utilisation
