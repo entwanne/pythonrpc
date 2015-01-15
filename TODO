@@ -1,3 +1,0 @@
-pool de workers
-limiter le nombre max de workers = param du RPCServer, None si pas de limite
-possiblement coupler les deux: avoir une pool de N workers et pouvoir monter jusqu'à M, en fermant les workers après leur tâche si plus de N workers sont en cours d'utilisation

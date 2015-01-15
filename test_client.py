@@ -1,7 +1,7 @@
 from server import RPCServer
 import protocol
 
-s = RPCServer('tcp://127.0.0.1:5000')
+s = RPCServer('tcp://127.0.0.1:5000', nb_workers=1, nb_max_workers=5)
 s.start()
 
 A = s.get('A')

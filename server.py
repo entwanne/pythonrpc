@@ -5,11 +5,11 @@ import zmq
 
 import protocol
 import serialize
-from worker import RPCWorker
+from worker import RPCWorkerPool, RPCWorker
 
 
 class RPCServer(object):
-    def __init__(self, socket_uri, bind=False):
+    def __init__(self, socket_uri, bind=False, nb_workers=0, nb_max_workers=None):
         self.ctx = zmq.Context()
         self.socket = self.ctx.socket(zmq.PAIR)
         if bind:
@@ -19,15 +19,18 @@ class RPCServer(object):
         self.objects = {}
         self.resps = {}
         self.events = {}
+        self.wpool = RPCWorkerPool(self, nb_workers, nb_max_workers)
+        self.listener = RPCServerListener(self)
 
     def start(self):
-        self.listener = RPCServerListener(self)
+        self.wpool.start()
         self.listener.start()
 
     def stop(self):
         for e in self.events.values():
             e.set()
         self.listener.stop()
+        self.wpool.stop()
 
     def register(self, id, obj):
         self.objects[id] = obj
@@ -67,8 +70,9 @@ class RPCServerListener(threading.Thread):
                 msg_id, msg_type, msg = protocol.unpack(self.server.socket.recv())
                 if msg_type == protocol.MsgType.REQUEST:
                     #print('Got request', msg)
-                    w = RPCWorker(self.server, msg_id, msg)
-                    w.start()
+                    #w = RPCWorker(self.server, msg_id, msg)
+                    #w.start()
+                    self.server.wpool.push(msg_id, msg)
                 elif msg_type == protocol.MsgType.RESPONSE:
                     #print('Got response', msg)
                     self.server.resps[msg_id] = msg # Use the lock
